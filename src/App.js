@@ -13,6 +13,8 @@ function App() {
     showPokemon();
   }, []);
 
+  console.log();
+
   return (
     <>
       <h1>{pokemon && pokemon.name?.toUpperCase()}</h1>
