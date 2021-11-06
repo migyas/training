@@ -1,29 +1,11 @@
-import { useEffect, useState } from "react";
+import { Home } from "./pages/Home";
+import { GlobalStyles } from "./styles/global";
 
-function App() {
-  const [pokemon, setPokemon] = useState({});
-
-  const showPokemon = async () => {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/pikachu`);
-    const data = await response.json();
-    setPokemon(data);
-  };
-
-  useEffect(() => {
-    showPokemon();
-  }, []);
-
-  console.log();
-
+export function App() {
   return (
     <>
-      <h1>{pokemon && pokemon.name?.toUpperCase()}</h1>
-      <img
-        src={pokemon && pokemon.sprites?.other.dream_world.front_default}
-        alt="pokemon img"
-      />
+      <Home />
+      <GlobalStyles />
     </>
   );
 }
-
-export default App;
