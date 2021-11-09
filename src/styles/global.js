@@ -12,6 +12,11 @@ export const GlobalStyles = createGlobalStyle`
         font-family: 'Roboto', sans-serif;
     }
 
+    body {
+        max-width: 1250px;
+        margin: auto;
+    }
+
     button {
         cursor: pointer;
     } 

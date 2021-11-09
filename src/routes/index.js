@@ -1,12 +1,15 @@
+import { Component } from "react";
 import { Routes as Switch, Route } from "react-router-dom";
-import { Dashboard } from "../pages/Dashboard";
-import { Transfers } from "../pages/Transfers";
+import { About } from "../pages/About";
+import { Home } from "../pages/Home";
 
-const Routes = () => (
-  <Switch>
-    <Route path="/" element={<Dashboard />} />
-    <Route path="/transfers" element={<Transfers />} />
-  </Switch>
-);
-
-export default Routes;
+export class Routes extends Component {
+  render() {
+    return (
+      <Switch>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+      </Switch>
+    );
+  }
+}

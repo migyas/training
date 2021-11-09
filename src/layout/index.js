@@ -1,20 +1,16 @@
-import { Button } from "../components/Button";
-import { Cashback } from "../components/Cashback";
+import { Component } from "react";
 import { Header } from "../components/Header";
-import { Navigation } from "../components/Navigation";
-import { Profile } from "../components/Profile";
 
-export function Layout({ children }) {
-  return (
-    <div>
-      <Header />
-      <div>
-        <Profile />
-        <Navigation />
-        <Cashback />
-        <Button />
-      </div>
-      <main>{children}</main>
-    </div>
-  );
+export class Layout extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <>
+        <Header />
+        <main>{this.props.children}</main>
+      </>
+    );
+  }
 }

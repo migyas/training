@@ -1,14 +1,27 @@
-export function Header() {
-  return (
-    <div style={{ background: "yellowgreen", display: "flex" }}>
-      <span>CashMate</span>
-      <input type="text" placeholder="Search" />
-      <div>
-        <img src="" alt="icon1" />
-        <img src="" alt="icon2" />
-        <img src="" alt="icon3" />
-        <img src="" alt="icon4" />
-      </div>
-    </div>
-  );
+import { Component } from "react";
+import { Container, Navbar } from "./styled";
+import logoImg from "../../assets/logo.svg";
+import { Link } from "react-router-dom";
+
+export class Header extends Component {
+  render() {
+    return (
+      <Container>
+        <img src={logoImg} alt="logo" />
+        <Navbar>
+          <ul>
+            <li>
+              <Link to="/">HOME</Link>
+            </li>
+            <li>
+              <Link to="/about">ABOUT</Link>
+            </li>
+            <li>
+              <a href="/">CONTACT</a>
+            </li>
+          </ul>
+        </Navbar>
+      </Container>
+    );
+  }
 }
