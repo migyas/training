@@ -1,17 +1,14 @@
-import { Component } from "react";
 import { BrowserRouter } from "react-router-dom";
-import { About } from "./pages/About";
-import { Home } from "./pages/Home";
+import { Header } from "./components/Header";
+import { Main } from "./components/Main";
 import { Routes } from "./routes";
-import { GlobalStyles } from "./styles/global";
-
-export class App extends Component {
-  render() {
-    return (
+export function App() {
+  return (
+    <>
+      {/* <Header /> */}
       <BrowserRouter>
         <Routes />
-        <GlobalStyles />
       </BrowserRouter>
-    );
-  }
+    </>
+  );
 }
