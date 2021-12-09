@@ -1,9 +1,9 @@
 import { Layout } from "../../layout";
 
-export function Home() {
+export function Register() {
   return (
     <Layout>
-      <div>Home</div>
+      <div>Register</div>
     </Layout>
   );
 }
