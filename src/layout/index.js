@@ -4,7 +4,7 @@ export function Layout({ children }) {
   return (
     <div style={{ display: "flex" }}>
       <Navbar />
-      <main>{children}</main>
+      <main style={{ width: "100%" }}>{children}</main>
     </div>
   );
 }
