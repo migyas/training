@@ -24,7 +24,7 @@ export function Navbar() {
               <Link to="/register">Register</Link>
             </li>
             <li>
-              <Link to="/user">Users</Link>
+              <Link to="/students">Students</Link>
             </li>
           </ul>
         </Nav>

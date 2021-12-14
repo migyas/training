@@ -4,7 +4,7 @@ export function Routes() {
   return (
     <Switch>
       {routes.map((route) => (
-        <Route path={route.path} element={route.component} />
+        <Route key={route.path} path={route.path} element={route.component} />
       ))}
     </Switch>
   );

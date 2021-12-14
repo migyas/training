@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   LineChart,
   XAxis,
@@ -7,6 +8,7 @@ import {
   Tooltip,
 } from "recharts";
 import { Layout } from "../../layout";
+import { getAllStudents } from "../../service/v1/students-service";
 import {
   CardContainer,
   CardItem,
@@ -16,6 +18,21 @@ import {
 } from "./styles";
 
 export function Home() {
+  const [students, setStudents] = useState([]);
+  async function getAllUser() {
+    try {
+      const data = await getAllStudents();
+      setStudents(data);
+    } catch {
+      console.log("Deu erro");
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      await getAllUser();
+    })();
+  }, []);
   const data = [
     {
       mounth: "april",
@@ -46,12 +63,12 @@ export function Home() {
         <Content>
           <CardContainer>
             <CardItem>
-              <span>Nº Users</span>
-              14
+              <span>Nº Students</span>
+              {students ? students.length : 0}
             </CardItem>
             <CardItem>
               <span>Nº Classes</span>
-              20
+              201
             </CardItem>
           </CardContainer>
           <div style={{ display: "flex", gap: "2.5rem" }}>

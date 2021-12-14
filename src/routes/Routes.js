@@ -1,6 +1,6 @@
 import { Home } from "../pages/Home";
 import { Register } from "../pages/Register";
-import { User } from "../pages/User";
+import { Students } from "../pages/Students";
 
 export const routes = [
   {
@@ -12,7 +12,7 @@ export const routes = [
     component: <Register />,
   },
   {
-    path: "/user",
-    component: <User />,
+    path: "/students",
+    component: <Students />,
   },
 ];
