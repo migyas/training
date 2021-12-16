@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useTable } from "react-table";
 import { Table } from "../../components/Table";
 import { Layout } from "../../layout";
 import { getAllStudents } from "../../service/v1/students-service";
