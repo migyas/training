@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "../../layout";
 import { Container, Content } from "./styles";
 import { createStudent } from "../../service/v1/students-service";
 import { createClass } from "../../service/v1/classes-service";
+import {
+  getAllMounthStatistics,
+  updateMounthStatistics,
+} from "../../service/v1/mounths-service";
 
 export function Register() {
   const [isLoading, setIsLoading] = useState(false);
+  const [mounths, setMounths] = useState([]);
   const history = useNavigate();
   const {
     register,
@@ -19,6 +24,17 @@ export function Register() {
       selectForm: "",
     },
   });
+
+  console.log(mounths);
+
+  async function getMounthStatistics() {
+    try {
+      const data = await getAllMounthStatistics();
+      setMounths(data);
+    } catch {
+      console.log("Deu erro");
+    }
+  }
   const selectForm = watch("selectForm");
 
   async function onSubmit({
@@ -31,7 +47,14 @@ export function Register() {
     if (selectForm === "student") {
       try {
         setIsLoading(true);
-        await createStudent({ nameUser, emailUser, entryMounth: selectMounth });
+        await createStudent({
+          nameUser,
+          emailUser,
+          entryMounthId: selectMounth,
+        });
+        await updateMounthStatistics(selectMounth, {
+          obj: mounths.find((item) => item.id.toString() === selectMounth),
+        });
         history("/");
       } catch {
         console.log("Deu erro!");
@@ -51,20 +74,12 @@ export function Register() {
     }
   }
 
-  const mounths = [
-    "january",
-    "february",
-    "march",
-    "april",
-    "may",
-    "june",
-    "july",
-    "august",
-    "september",
-    "october",
-    "november",
-    "december",
-  ];
+  useEffect(() => {
+    (async () => {
+      await getMounthStatistics();
+    })();
+  }, []);
+
   return (
     <Layout>
       <Container>
@@ -91,8 +106,8 @@ export function Register() {
                   <br></br>
                   <label htmlFor="selectMounth">Select mounth entry</label>
                   <select {...register("selectMounth")}>
-                    {mounths.map((mounth) => (
-                      <option key={mounth} value={mounth}>
+                    {mounths.map(({ mounth, id }) => (
+                      <option key={id} value={id}>
                         {mounth}
                       </option>
                     ))}

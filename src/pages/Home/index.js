@@ -6,10 +6,10 @@ import {
   Line,
   CartesianGrid,
   Tooltip,
-  BarChart,
 } from "recharts";
 import { Layout } from "../../layout";
 import { getAllClasses } from "../../service/v1/classes-service";
+import { getAllMounthStatistics } from "../../service/v1/mounths-service";
 import { getAllStudents } from "../../service/v1/students-service";
 import {
   CardContainer,
@@ -22,26 +22,11 @@ import {
 export function Home() {
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
-  const [graph1, setGraph1] = useState([]);
-  // const mounths = [
-  //   { mounth: "january" },
-  //   { mounth: "february" },
-  //   { mounth: "march" },
-  //   { mounth: "april" },
-  //   { mounth: "may" },
-  //   { mounth: "june" },
-  //   { mounth: "july" },
-  //   { mounth: "august" },
-  //   { mounth: "september" },
-  //   { mounth: "october" },
-  //   { mounth: "november" },
-  //   { mounth: "december" },
-  // ];
+  const [graphStudents, setGraphStudents] = useState([]);
+
   async function getAllUser() {
     try {
       const data = await getAllStudents();
-      // const filterAny = data.filter((r) => r.mounth);
-      console.log(data);
       setStudents(data);
     } catch {
       console.log("Deu erro");
@@ -57,10 +42,20 @@ export function Home() {
     }
   }
 
+  async function getMounthStatistics() {
+    try {
+      const data = await getAllMounthStatistics();
+      setGraphStudents(data);
+    } catch {
+      console.log("Deu erro");
+    }
+  }
+
   useEffect(() => {
     (async () => {
       await getAllUser();
       await getAllClass();
+      await getMounthStatistics();
     })();
   }, []);
 
@@ -82,25 +77,14 @@ export function Home() {
           <div style={{ display: "flex", gap: "2.5rem" }}>
             <GraphicContainer>
               <h2>Students Registers</h2>
-              <LineChart width={850} height={400} data={graph1}>
+              <LineChart width={950} height={400} data={graphStudents}>
                 <XAxis dataKey="mounth" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="numbers" stroke="#ff7300" />
-                <Line type="monotone" dataKey="amt" stroke="#402d00" />
+                <CartesianGrid stroke="#ccc" />
+                <Line type="monotone" dataKey="count" stroke="#ff7300" />
               </LineChart>
             </GraphicContainer>
-            {/* <GraphicContainer>
-              <h2>Graph Access</h2>
-              <LineChart width={600} height={400} data={data}>
-                <XAxis />
-                <YAxis />
-                <Tooltip />
-                <CartesianGrid stroke="#ccc" />
-                <Line type="monotone" dataKey="access" stroke="#ff7300" />
-                <Line type="monotone" dataKey="amt" stroke="#402d00" />
-              </LineChart>
-            </GraphicContainer> */}
           </div>
         </Content>
       </Container>
