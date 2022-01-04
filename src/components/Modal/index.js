@@ -1,14 +1,18 @@
 import { X } from "react-feather";
 import { Container } from "./styles";
 
-export function Modal({ onClose, isOpen }) {
+export function Modal({ onClose, isOpen, rowSelect }) {
   return (
     <Container isOpen={isOpen}>
-      <header>
-        <h2>Edit Student</h2>
-        <X onClick={onClose} style={{ cursor: "pointer" }} />
-      </header>
-      <form></form>
+      <div>
+        <header>
+          <h2>Edit Student</h2>
+          <X onClick={onClose} style={{ cursor: "pointer" }} />
+        </header>
+        <p>{rowSelect.original.nameUser}</p>
+
+        <form></form>
+      </div>
     </Container>
   );
 }
