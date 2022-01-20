@@ -25,6 +25,7 @@ export const Container = styled.div`
   transform: translate(-50%, -50%);
   animation: ${animation1} 0.3s linear;
   opacity: 1;
+  padding: 2rem;
 
   header {
     padding: 1.5rem;
@@ -36,6 +37,15 @@ export const Container = styled.div`
         color: blue;
       }
     }
+  }
+
+  label {
+    padding: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  input {
+    margin-bottom: 2rem;
   }
 
   /* ${({ isOpen }) =>

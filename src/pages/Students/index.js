@@ -4,15 +4,23 @@ import { Modal } from "../../components/Modal";
 import { Table } from "../../components/Table";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import { Layout } from "../../layout";
-import { getAllStudents } from "../../service/v1/students-service";
+import {
+  deleteStudent,
+  getAllStudents,
+} from "../../service/v1/students-service";
 import { Container, Content } from "./styles";
 
 export function Students() {
   const [students, setStudents] = useState([]);
   const [rowSelect, setRowSelect] = useState({});
+  const [limitPage, setLimitPage] = useState(5);
   const [isOpen, setIsOpen] = useState(false);
   const rowRef = useRef();
   const expandedRef = useRef();
+
+  const pageNumbers = Array(5)
+    .fill(undefined)
+    .map((_, index) => index + 1);
 
   useOutsideClick(rowRef, () => {
     if (isOpen) {
@@ -29,7 +37,7 @@ export function Students() {
 
   async function getStudents() {
     try {
-      const data = await getAllStudents();
+      const data = await getAllStudents(1, limitPage);
       if (data.lenght === 0) {
         console.log("Não tem dados");
       }
@@ -39,11 +47,16 @@ export function Students() {
     }
   }
 
+  async function deleteStudentById(id) {
+    await deleteStudent(id);
+    getStudents();
+  }
+
   useEffect(() => {
     (async () => {
       await getStudents();
     })();
-  }, []);
+  }, [limitPage]);
 
   const columns = useMemo(
     () => [
@@ -96,7 +109,10 @@ export function Students() {
                   >
                     EDIT
                   </button>
-                  <button style={{ border: "none", padding: "0 .5rem" }}>
+                  <button
+                    style={{ border: "none", padding: "0 .5rem" }}
+                    onClick={() => deleteStudentById(row.original.id)}
+                  >
                     DELETE
                   </button>
                 </div>
@@ -115,15 +131,56 @@ export function Students() {
         <Container>
           <h1>Dashboard | Table of Students</h1>
           <Content>
+            <h3>Select Show Items:</h3>
+            <select onChange={(e) => setLimitPage(e.target.value)}>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+            <span>Shower {students.length}</span>
             <Table data={students} columns={columns} />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: "2rem",
+              }}
+            >
+              <div
+                style={{
+                  width: "15%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                {pageNumbers.map((item) => (
+                  <div
+                    key={item}
+                    style={{
+                      width: "25px",
+                      textAlign: "center",
+                      backgroundColor: "#bdbdbd",
+                      cursor: "pointer",
+                      color: "#fff",
+                    }}
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
           </Content>
         </Container>
       </Layout>
+
       {isOpen ? (
         <div ref={rowRef}>
           <Modal
             rowSelect={rowSelect}
             isOpen={isOpen}
+            getStudents={getStudents}
             onClose={() => setIsOpen(false)}
           />
         </div>
