@@ -7,20 +7,28 @@ import { Layout } from "../../layout";
 import {
   deleteStudent,
   getAllStudents,
+  getAllStudentsPaginate,
 } from "../../service/v1/students-service";
-import { Container, Content } from "./styles";
+import { Container, Content, Pagination } from "./styles";
 
 export function Students() {
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState({
+    items: [],
+    count: 0,
+  });
   const [rowSelect, setRowSelect] = useState({});
   const [limitPage, setLimitPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
   const rowRef = useRef();
   const expandedRef = useRef();
 
-  const pageNumbers = Array(5)
-    .fill(undefined)
-    .map((_, index) => index + 1);
+  function getPagination() {
+    const resultDiv = Math.ceil(students.count / limitPage);
+    return Array(resultDiv)
+      .fill(undefined)
+      .map((_, index) => index + 1);
+  }
 
   useOutsideClick(rowRef, () => {
     if (isOpen) {
@@ -37,11 +45,15 @@ export function Students() {
 
   async function getStudents() {
     try {
-      const data = await getAllStudents(1, limitPage);
+      const data = await getAllStudents();
+      const dataPerPage = await getAllStudentsPaginate(currentPage, limitPage);
       if (data.lenght === 0) {
         console.log("Não tem dados");
       }
-      setStudents(data);
+      setStudents(() => ({
+        count: data.length,
+        items: dataPerPage,
+      }));
     } catch {
       console.log("Deu erro!");
     }
@@ -56,7 +68,7 @@ export function Students() {
     (async () => {
       await getStudents();
     })();
-  }, [limitPage]);
+  }, [limitPage, currentPage]);
 
   const columns = useMemo(
     () => [
@@ -132,14 +144,21 @@ export function Students() {
           <h1>Dashboard | Table of Students</h1>
           <Content>
             <h3>Select Show Items:</h3>
-            <select onChange={(e) => setLimitPage(e.target.value)}>
+            <select
+              onChange={(e) => {
+                setLimitPage(e.target.value);
+                setCurrentPage(1);
+              }}
+            >
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
             </select>
-            <span>Shower {students.length}</span>
-            <Table data={students} columns={columns} />
+            <span>
+              Shower {students.items.length} of {students.count}
+            </span>
+            <Table data={students.items} columns={columns} />
             <div
               style={{
                 display: "flex",
@@ -147,7 +166,7 @@ export function Students() {
                 paddingTop: "2rem",
               }}
             >
-              <div
+              <Pagination
                 style={{
                   width: "15%",
                   display: "flex",
@@ -155,21 +174,16 @@ export function Students() {
                   alignItems: "center",
                 }}
               >
-                {pageNumbers.map((item) => (
+                {getPagination().map((item) => (
                   <div
                     key={item}
-                    style={{
-                      width: "25px",
-                      textAlign: "center",
-                      backgroundColor: "#bdbdbd",
-                      cursor: "pointer",
-                      color: "#fff",
-                    }}
+                    className={item === currentPage ? "active" : "page__number"}
+                    onClick={() => setCurrentPage(item)}
                   >
                     {item}
                   </div>
                 ))}
-              </div>
+              </Pagination>
             </div>
           </Content>
         </Container>

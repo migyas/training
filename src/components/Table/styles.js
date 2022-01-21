@@ -9,7 +9,6 @@ export const Container = styled.div`
 
 export const TableContainer = styled.table`
   width: 100%;
-
   thead {
     height: 5rem;
     background: #222;
