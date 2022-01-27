@@ -12,6 +12,12 @@ async function getAllStudentsPaginate(page, limit) {
   return data;
 }
 
+async function getForSearchTerm(term) {
+  const { data } = await api.get(`users?q=${term}`);
+
+  return data;
+}
+
 async function createStudent(data) {
   await api.post("users", data);
 }
@@ -27,6 +33,7 @@ async function deleteStudent(id) {
 export {
   getAllStudents,
   getAllStudentsPaginate,
+  getForSearchTerm,
   createStudent,
   updateStudent,
   deleteStudent,

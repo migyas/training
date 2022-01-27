@@ -1,5 +1,6 @@
 import { Routes as Switch, Route } from "react-router-dom";
 import { routes } from "./Routes";
+
 export function Routes() {
   return (
     <Switch>

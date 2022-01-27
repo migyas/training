@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { MoreVertical } from "react-feather";
+import Select, { components } from "react-select";
 import { Modal } from "../../components/Modal";
 import { Table } from "../../components/Table";
 import useOutsideClick from "../../hooks/useOutsideClick";
@@ -8,10 +9,12 @@ import {
   deleteStudent,
   getAllStudents,
   getAllStudentsPaginate,
+  getForSearchTerm,
 } from "../../service/v1/students-service";
 import { Container, Content, Pagination } from "./styles";
 
 export function Students() {
+  const [inputText, setInputText] = useState("");
   const [students, setStudents] = useState({
     items: [],
     count: 0,
@@ -20,15 +23,36 @@ export function Students() {
   const [limitPage, setLimitPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const rowRef = useRef();
   const expandedRef = useRef();
 
   function getPagination() {
     const resultDiv = Math.ceil(students.count / limitPage);
+    if (students.items.length === 0 || students.items.length < limitPage) {
+      return [];
+    }
+
     return Array(resultDiv)
       .fill(undefined)
       .map((_, index) => index + 1);
   }
+
+  function handleSearchChange(term) {
+    setInputText(term);
+  }
+
+  // useEffect(() => {
+  //   const intersectionObserver = new IntersectionObserver((entries) => {
+  //     if (entries[0].isIntersecting === true) {
+  //       console.log("Está mostrando", entries);
+  //       setLimitPage((prevState) => prevState + 5);
+  //     }
+  //   });
+  //   intersectionObserver.observe(document.querySelector("#sentinela"));
+
+  //   return () => intersectionObserver.disconnect();
+  // }, []);
 
   useOutsideClick(rowRef, () => {
     if (isOpen) {
@@ -45,6 +69,7 @@ export function Students() {
 
   async function getStudents() {
     try {
+      setIsLoading(true);
       const data = await getAllStudents();
       const dataPerPage = await getAllStudentsPaginate(currentPage, limitPage);
       if (data.lenght === 0) {
@@ -56,6 +81,8 @@ export function Students() {
       }));
     } catch {
       console.log("Deu erro!");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -137,6 +164,57 @@ export function Students() {
     []
   );
 
+  const options = [
+    {
+      label: "ihul",
+      value: "ihaaaa",
+    },
+    {
+      label: "asd",
+      value: "asd",
+    },
+    {
+      label: "sws",
+      value: "sws",
+    },
+  ];
+
+  // const CustomOption = (props) => {
+  //   console.log(options);
+  //   const { data } = props;
+  //   console.log(data);
+  //   return (
+  //     <components.Option {...props}>
+  //       <div>
+  //         <div
+  //           className="material-icons-outlined"
+  //           marginRight="2"
+  //           fontSize="xl"
+  //         >
+  //           {data.value}
+  //         </div>
+  //         <h2>{data.label}</h2>
+  //       </div>
+  //     </components.Option>
+  //   );
+  // };
+
+  useEffect(() => {
+    (async () => {
+      setIsLoading(true);
+      if (inputText.length >= 3) {
+        const data = await getForSearchTerm(inputText);
+        if (inputText === "") {
+          await getStudents();
+        }
+        setStudents((prevState) => ({ ...prevState, items: data }));
+      }
+      setIsLoading(false);
+    })();
+  }, [inputText]);
+
+  console.log(students);
+
   return (
     <>
       <Layout>
@@ -158,7 +236,51 @@ export function Students() {
             <span>
               Shower {students.items.length} of {students.count}
             </span>
-            <Table data={students.items} columns={columns} />
+            {/* <Select options={options} components={{ Option: CustomOption }} /> */}
+            {/* <div style={{ height: "200px", overflowY: "auto" }}>
+              {students.items.map((student) => (
+                <div
+                  key={student.id}
+                  style={{ width: "250px", height: "100px" }}
+                >
+                  {student.nameUser}
+                </div>
+              ))}
+
+              {students.count >= limitPage ? (
+                <div id="sentinela">Loading...</div>
+              ) : (
+                <div id="sentinela" />
+              )}
+            </div> */}
+            <div>
+              <input
+                type="text"
+                placeholder="Search for student name"
+                onChange={(e) => handleSearchChange(e.target.value)}
+              />
+            </div>
+            {isLoading ? (
+              "Loading..."
+            ) : (
+              <>
+                {students.items.length === 0 ? (
+                  <p
+                    style={{
+                      padding: "5rem 0",
+                      textAlign: "center",
+                      fontSize: "3.5rem",
+                    }}
+                  >
+                    Not found student
+                  </p>
+                ) : (
+                  <>
+                    <Table data={students.items} columns={columns} />
+                  </>
+                )}
+              </>
+            )}
             <div
               style={{
                 display: "flex",
